@@ -20,7 +20,7 @@ fn main() {
 
     // Loop over both arrays to find the pairs that sum to 2020 and print the multiplication of
     // those values.
-    for (lhs_i, lhs_expense) in expenses.iter().enumerate() {
+    'outer2: for (lhs_i, lhs_expense) in expenses.iter().enumerate() {
         for (rhs_i, rhs_expense) in expenses.iter().enumerate() {
             if lhs_i == rhs_i {
                 continue;
@@ -37,7 +37,38 @@ fn main() {
                     lhs_expense,
                     rhs_expense * lhs_expense,
                 );
-                return;
+                break 'outer2;
+            }
+        }
+    }
+
+    // Pt. 2: Do the same as above but for 3 values.
+    'outer3: for (lhs_i, lhs_expense) in expenses.iter().enumerate() {
+        for (rhs_i, rhs_expense) in expenses.iter().enumerate() {
+            if lhs_i == rhs_i {
+                continue;
+            }
+
+            for (mhs_i, mhs_expense) in expenses.iter().enumerate() {
+                if mhs_i == lhs_i || mhs_i == rhs_i {
+                    continue;
+                }
+
+                let sum = lhs_expense + mhs_expense + rhs_expense;
+
+                if sum == 2020 {
+                    println!(
+                        "{} + {} + {} = 2020, {} * {} * {} = {}", 
+                        lhs_expense, 
+                        mhs_expense,
+                        rhs_expense,
+                        rhs_expense,
+                        mhs_expense,
+                        lhs_expense,
+                        rhs_expense * lhs_expense * mhs_expense,
+                    );
+                    break 'outer3;
+                }
             }
         }
     }

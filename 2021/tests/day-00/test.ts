@@ -1,31 +1,22 @@
 import * as path from 'path'
-import * as fs from 'fs'
-import * as readline from 'readline'
+import { readFileByLine } from '../../utils'
 
 interface Instruction {
   command: 'nop' | 'acc' | 'jmp'
   amount: number
 }
 
-const parseInput = async (): Promise<Instruction[]> => {
-  const instructions: Instruction[] = []
-  const input = fs.createReadStream(path.resolve(__dirname, './input.txt'))
-  const rl = readline.createInterface({
-    input,
-    crlfDelay: Infinity,
-  })
-
-  for await (const line of rl) {
-    const [command, amount] = line.split(' ')
-    instructions.push({
-      // @ts-ignore
-      command,
-      amount: parseInt(amount),
-    })
-  }
-
-  return instructions
-}
+const parseInput = async (): Promise<Instruction[]> =>
+  (await readFileByLine(path.resolve(__dirname, './input.txt'))).map(
+    (line): Instruction => {
+      const [command, amount] = line.split(' ')
+      return {
+        // @ts-ignore
+        command,
+        amount: parseInt(amount),
+      }
+    }
+  )
 
 interface ProgramOutput {
   acc: number
@@ -39,7 +30,11 @@ const runInstructions = (instructions: Instruction[]): ProgramOutput => {
     linesRun: [],
   }
 
-  while (!output.linesRun.includes(currentLine)) {
+  // Exit if we see the same line twice OR we hit the end of the file
+  while (
+    !output.linesRun.includes(currentLine) ||
+    currentLine + 1 === instructions.length
+  ) {
     const currentInstruction = instructions[currentLine]
     output.linesRun.push(currentLine)
 

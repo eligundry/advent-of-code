@@ -27,15 +27,21 @@ const parseInput = async (): Promise<Instruction[]> => {
   return instructions
 }
 
-const fn = async () => {
-  let acc = 0
-  let currentLine = 0
-  const linesRun: number[] = []
-  const instructions = await parseInput()
+interface ProgramOutput {
+  acc: number
+  linesRun: number[]
+}
 
-  while (!linesRun.includes(currentLine)) {
+const runInstructions = (instructions: Instruction[]): ProgramOutput => {
+  let currentLine = 0
+  const output: ProgramOutput = {
+    acc: 0,
+    linesRun: [],
+  }
+
+  while (!output.linesRun.includes(currentLine)) {
     const currentInstruction = instructions[currentLine]
-    linesRun.push(currentLine)
+    output.linesRun.push(currentLine)
 
     switch (currentInstruction.command) {
       case 'nop':
@@ -45,17 +51,32 @@ const fn = async () => {
         currentLine += currentInstruction.amount
         break
       case 'acc':
-        acc += currentInstruction.amount
+        output.acc += currentInstruction.amount
         currentLine += 1
         break
     }
   }
 
-  return acc
+  return output
+}
+
+const fn = async (applyFix: boolean) => {
+  const instructions = await parseInput()
+  const buggyOutput = runInstructions(instructions)
+
+  if (!applyFix) {
+    return buggyOutput.acc
+  }
+
+  return buggyOutput.acc
 }
 
 describe('Day 0: Handheld Halting', () => {
   it('should pass part 1', async () => {
-    expect(await fn()).toBe(1586)
+    expect(await fn(false)).toBe(1586)
+  })
+
+  it('should pass part 2', async () => {
+    expect(await fn(true)).toBe(1586)
   })
 })

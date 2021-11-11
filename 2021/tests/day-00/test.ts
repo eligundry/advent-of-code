@@ -20,23 +20,22 @@ const parseInput = async (): Promise<Instruction[]> =>
 
 interface ProgramOutput {
   acc: number
-  linesRun: number[]
+  linesRun: Set<number>
+  exitCode: 0 | 1
 }
 
 const runInstructions = (instructions: Instruction[]): ProgramOutput => {
   let currentLine = 0
   const output: ProgramOutput = {
     acc: 0,
-    linesRun: [],
+    linesRun: new Set<number>(),
+    exitCode: 1,
   }
 
-  // Exit if we see the same line twice OR we hit the end of the file
-  while (
-    !output.linesRun.includes(currentLine) ||
-    currentLine + 1 === instructions.length
-  ) {
+  // Exit if we see the same line twice
+  while (!output.linesRun.has(currentLine)) {
     const currentInstruction = instructions[currentLine]
-    output.linesRun.push(currentLine)
+    output.linesRun.add(currentLine)
 
     switch (currentInstruction.command) {
       case 'nop':
@@ -50,6 +49,11 @@ const runInstructions = (instructions: Instruction[]): ProgramOutput => {
         currentLine += 1
         break
     }
+
+    if (currentLine === instructions.length) {
+      output.exitCode = 0
+      return output
+    }
   }
 
   return output
@@ -60,18 +64,37 @@ const fn = async (applyFix: boolean) => {
   const buggyOutput = runInstructions(instructions)
 
   if (!applyFix) {
-    return buggyOutput.acc
+    return buggyOutput
   }
 
-  return buggyOutput.acc
+  for (let i = 0; i < instructions.length; i++) {
+    if (instructions[i].command === 'acc') {
+      continue
+    }
+
+    const updatedInstructions = [...instructions]
+    updatedInstructions[i].command =
+      updatedInstructions[i].command === 'nop' ? 'jmp' : 'nop'
+    const updatedOutput = runInstructions(updatedInstructions)
+
+    if (updatedOutput.exitCode === 0) {
+      return updatedOutput
+    }
+  }
+
+  return buggyOutput
 }
 
 describe('Day 0: Handheld Halting', () => {
   it('should pass part 1', async () => {
-    expect(await fn(false)).toBe(1586)
+    const output = await fn(false)
+    expect(output.acc).toBe(1586)
+    expect(output.exitCode).toBe(1)
   })
 
   it('should pass part 2', async () => {
-    expect(await fn(true)).toBe(1586)
+    const output = await fn(true)
+    console.log({ output })
+    expect(output.exitCode).toBe(0)
   })
 })

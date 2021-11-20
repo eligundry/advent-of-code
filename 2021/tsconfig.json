@@ -1,6 +1,7 @@
 {
   "include": ["tests/**/*.ts", "utils/*.ts"],
   "compilerOptions": {
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": "."
   }
 }

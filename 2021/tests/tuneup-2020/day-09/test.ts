@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { readFileByLine } from '../../utils'
+import { readFileByLine } from 'utils'
 
 interface Instruction {
   command: 'nop' | 'acc' | 'jmp'
@@ -7,7 +7,7 @@ interface Instruction {
 }
 
 const parseInput = async (): Promise<Instruction[]> =>
-  (await readFileByLine(path.resolve(__dirname, './input-09.txt'))).map(
+  (await readFileByLine(path.resolve(__dirname, './input.txt'))).map(
     (line): Instruction => {
       const [command, amount] = line.split(' ')
       return {

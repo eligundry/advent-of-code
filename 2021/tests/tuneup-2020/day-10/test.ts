@@ -1,8 +1,8 @@
 import * as path from 'path'
-import { readFileByLine } from '../../utils'
+import { readFileByLine } from 'utils'
 
 const parseInput = async (): Promise<number[]> =>
-  (await readFileByLine(path.resolve(__dirname, './input-10.txt'))).map(
+  (await readFileByLine(path.resolve(__dirname, './input.txt'))).map(
     (line): number => parseInt(line)
   )
 

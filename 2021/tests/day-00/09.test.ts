@@ -7,7 +7,7 @@ interface Instruction {
 }
 
 const parseInput = async (): Promise<Instruction[]> =>
-  (await readFileByLine(path.resolve(__dirname, './input.txt'))).map(
+  (await readFileByLine(path.resolve(__dirname, './input-09.txt'))).map(
     (line): Instruction => {
       const [command, amount] = line.split(' ')
       return {

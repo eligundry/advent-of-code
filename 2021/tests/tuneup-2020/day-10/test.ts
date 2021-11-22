@@ -14,6 +14,9 @@ const findBrokenNumber = (
     throw new Error('preamble cannot be more than the input')
   }
 
+  // The "correct" way to solve this is to compute all the combinations in the
+  // window. I'm too lazy to do that so I'll just leave this nast loop based one
+  // for now.
   // pi = preambleIndex
   for (let pi = preamble; pi <= numbers.length; pi++) {
     let foundMatch = false

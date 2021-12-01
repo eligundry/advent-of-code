@@ -48,7 +48,7 @@ const findBrokenNumber = (
 }
 
 describe('Day 0: Encoding Error', () => {
-  it('it should detect 26 as a valid number', async () => {
+  it('should detect 26 as a valid number', async () => {
     const input = [...Array(25).keys()].map((i) => i + 1)
     expect(findBrokenNumber(input, 25)).toBeUndefined()
   })

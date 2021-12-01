@@ -94,7 +94,7 @@ describe('Day 0: Handheld Halting', () => {
 
   it('should pass part 2', async () => {
     const output = await fn(true)
-    console.log({ output })
+    // console.log({ output })
     expect(output.exitCode).toBe(0)
   })
 })

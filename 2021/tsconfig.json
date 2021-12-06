@@ -2,6 +2,7 @@
   "include": ["tests/**/*.ts", "utils/*.ts"],
   "compilerOptions": {
     "downlevelIteration": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "esModuleInterop": true
   }
 }

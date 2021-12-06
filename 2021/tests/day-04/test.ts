@@ -1,4 +1,5 @@
 import * as path from 'path'
+import cloneDeep from 'lodash/cloneDeep'
 import { readFileByLine } from 'utils'
 
 type Board = Array<Map<number, boolean>>
@@ -71,7 +72,13 @@ const calculateWinningNumber = (board: Board, numberPulled: number): number => {
   return unmarkedSum * numberPulled
 }
 
-const bingo = (drawnNumbers: number[], boards: Board[]): number => {
+const bingo = (
+  drawnNumbers: number[],
+  boards: Board[],
+  findLastWinner: boolean = false
+): number => {
+  let winningBoards = boards.map(() => false)
+
   for (let i = 0; i < drawnNumbers.length; i++) {
     const numberPulled = drawnNumbers[i]
 
@@ -83,7 +90,11 @@ const bingo = (drawnNumbers: number[], boards: Board[]): number => {
       }
 
       if (isBoardWinner(boards[boardIndex])) {
-        return calculateWinningNumber(boards[boardIndex], numberPulled)
+        winningBoards[boardIndex] = true
+
+        if (!findLastWinner || winningBoards.every((win) => win)) {
+          return calculateWinningNumber(boards[boardIndex], numberPulled)
+        }
       }
     }
   }
@@ -92,131 +103,143 @@ const bingo = (drawnNumbers: number[], boards: Board[]): number => {
 }
 
 describe('Day 4: Giant Squid', () => {
+  const testDrawnNumbers = [
+    7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18,
+    20, 8, 19, 3, 26, 1,
+  ]
+  const testBoards: Board[] = [
+    [
+      new Map([
+        [22, false],
+        [13, false],
+        [17, false],
+        [11, false],
+        [0, false],
+      ]),
+      new Map([
+        [8, false],
+        [2, false],
+        [23, false],
+        [4, false],
+        [24, false],
+      ]),
+      new Map([
+        [21, false],
+        [9, false],
+        [14, false],
+        [16, false],
+        [7, false],
+      ]),
+      new Map([
+        [6, false],
+        [10, false],
+        [3, false],
+        [18, false],
+        [5, false],
+      ]),
+      new Map([
+        [1, false],
+        [12, false],
+        [20, false],
+        [15, false],
+        [19, false],
+      ]),
+    ],
+    [
+      new Map([
+        [3, false],
+        [15, false],
+        [0, false],
+        [2, false],
+        [22, false],
+      ]),
+      new Map([
+        [9, false],
+        [18, false],
+        [13, false],
+        [17, false],
+        [5, false],
+      ]),
+      new Map([
+        [19, false],
+        [8, false],
+        [7, false],
+        [25, false],
+        [23, false],
+      ]),
+      new Map([
+        [20, false],
+        [11, false],
+        [10, false],
+        [24, false],
+        [4, false],
+      ]),
+      new Map([
+        [14, false],
+        [21, false],
+        [16, false],
+        [12, false],
+        [6, false],
+      ]),
+    ],
+    [
+      new Map([
+        [14, false],
+        [21, false],
+        [17, false],
+        [24, false],
+        [4, false],
+      ]),
+      new Map([
+        [10, false],
+        [16, false],
+        [15, false],
+        [9, false],
+        [19, false],
+      ]),
+      new Map([
+        [18, false],
+        [8, false],
+        [23, false],
+        [26, false],
+        [20, false],
+      ]),
+      new Map([
+        [22, false],
+        [11, false],
+        [13, false],
+        [6, false],
+        [5, false],
+      ]),
+      new Map([
+        [2, false],
+        [0, false],
+        [12, false],
+        [3, false],
+        [7, false],
+      ]),
+    ],
+  ]
+
   it('should handle the test input', async () => {
-    const drawnNumbers = [
-      7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22,
-      18, 20, 8, 19, 3, 26, 1,
-    ]
-    const boards: Board[] = [
-      [
-        new Map([
-          [22, false],
-          [13, false],
-          [17, false],
-          [11, false],
-          [0, false],
-        ]),
-        new Map([
-          [8, false],
-          [2, false],
-          [23, false],
-          [4, false],
-          [24, false],
-        ]),
-        new Map([
-          [21, false],
-          [9, false],
-          [14, false],
-          [16, false],
-          [7, false],
-        ]),
-        new Map([
-          [6, false],
-          [10, false],
-          [3, false],
-          [18, false],
-          [5, false],
-        ]),
-        new Map([
-          [1, false],
-          [12, false],
-          [20, false],
-          [15, false],
-          [19, false],
-        ]),
-      ],
-      [
-        new Map([
-          [3, false],
-          [15, false],
-          [0, false],
-          [2, false],
-          [22, false],
-        ]),
-        new Map([
-          [9, false],
-          [18, false],
-          [13, false],
-          [17, false],
-          [5, false],
-        ]),
-        new Map([
-          [19, false],
-          [8, false],
-          [7, false],
-          [25, false],
-          [23, false],
-        ]),
-        new Map([
-          [20, false],
-          [11, false],
-          [10, false],
-          [24, false],
-          [4, false],
-        ]),
-        new Map([
-          [14, false],
-          [21, false],
-          [16, false],
-          [12, false],
-          [6, false],
-        ]),
-      ],
-      [
-        new Map([
-          [14, false],
-          [21, false],
-          [17, false],
-          [24, false],
-          [4, false],
-        ]),
-        new Map([
-          [10, false],
-          [16, false],
-          [15, false],
-          [9, false],
-          [19, false],
-        ]),
-        new Map([
-          [18, false],
-          [8, false],
-          [23, false],
-          [26, false],
-          [20, false],
-        ]),
-        new Map([
-          [22, false],
-          [11, false],
-          [13, false],
-          [6, false],
-          [5, false],
-        ]),
-        new Map([
-          [2, false],
-          [0, false],
-          [12, false],
-          [3, false],
-          [7, false],
-        ]),
-      ],
-    ]
-    expect(bingo(drawnNumbers, boards)).toBe(4512)
+    expect(bingo(testDrawnNumbers, cloneDeep(testBoards))).toBe(4512)
   })
 
   it('should find the answer for part 1', async () => {
     const [numbersDrawn, boards] = await parseInput()
     const answer = bingo(numbersDrawn, boards)
     console.log(`the answer for part 1 is ${answer}`)
-    expect(answer).toBeDefined()
+    expect(answer).toBe(10374)
+  })
+
+  it('should find the board that wins last from the example', async () => {
+    expect(bingo(testDrawnNumbers, cloneDeep(testBoards), true)).toBe(1924)
+  })
+
+  it('should find the answer for part 2', async () => {
+    const [numbersDrawn, boards] = await parseInput()
+    const answer = bingo(numbersDrawn, boards, true)
+    console.log(`the answer for part 2 is ${answer}`)
+    expect(answer).toBe(24742)
   })
 })

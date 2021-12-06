@@ -10,31 +10,31 @@ const parseInput = async (): Promise<[number[], Board[]]> => {
   let boards: Board[] = []
   let currentBoard: Board = []
 
-  for (let i = 0; i < lines.length; i++) {
+  lines.forEach((line, i) => {
     if (i === 0) {
-      drawnNumbers = lines[i].split(',').map((num) => parseInt(num))
-      continue
+      drawnNumbers = line.split(',').map((num) => parseInt(num))
+      return
     }
 
-    if (!lines[i].trim()) {
+    if (!line.trim()) {
       if (currentBoard.length) {
         boards.push(currentBoard)
         currentBoard = []
       }
 
-      continue
+      return
     }
 
     currentBoard.push(
       new Map(
         // @ts-ignore
-        lines[i]
+        line
           .split(' ')
           .map((num) => [parseInt(num), false])
           .filter(([num]) => !Number.isNaN(num))
       )
     )
-  }
+  })
 
   return [drawnNumbers, boards]
 }

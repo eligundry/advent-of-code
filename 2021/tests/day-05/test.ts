@@ -16,7 +16,7 @@ const parseInput = async (): Promise<Line[]> =>
 const drawMap = (map: number[][]) =>
   map.map((yLine) => yLine.map((v) => (v === 0 ? '.' : v)).join('')).join('\n')
 
-const findSumOfMostDangerousLines = (
+const findCountOfMostDangerousPoints = (
   lines: Line[],
   { size = 10, diagonal = false }
 ): number => {
@@ -119,25 +119,25 @@ describe('Day 5: Hydrothermal Venture', () => {
   ]
 
   it('should handle the test input', async () => {
-    expect(findSumOfMostDangerousLines(testLines, { size: 10 })).toBe(5)
+    expect(findCountOfMostDangerousPoints(testLines, { size: 10 })).toBe(5)
   })
 
   it('should find the most dangerout points for part 1', async () => {
     const lines = await parseInput()
-    const answer = findSumOfMostDangerousLines(lines, { size: 1000 })
+    const answer = findCountOfMostDangerousPoints(lines, { size: 1000 })
     console.log(`the answer for part 1 is ${answer}`)
     expect(answer).toBe(7318)
   })
 
   it('should find the correct number for diagonal lines in the test input', async () => {
     expect(
-      findSumOfMostDangerousLines(testLines, { size: 10, diagonal: true })
+      findCountOfMostDangerousPoints(testLines, { size: 10, diagonal: true })
     ).toBe(12)
   })
 
   it('should find the answer for part 2', async () => {
     const lines = await parseInput()
-    const answer = findSumOfMostDangerousLines(lines, {
+    const answer = findCountOfMostDangerousPoints(lines, {
       size: 1000,
       diagonal: true,
     })

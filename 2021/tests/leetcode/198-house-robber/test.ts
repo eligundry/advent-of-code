@@ -1,3 +1,24 @@
+// I had a terrible solution that had nested for loops.
+// const rob = (houses: number[]): number => {
+//   let maxMoney = 0
+//   let maxStep = Math.max(houses.length, 3)
+//
+//   for (let step = 2; step < maxStep; step++) {
+//     for (let start = 0; start < houses.length; start++) {
+//       let run = 0
+//
+//       for (let i = 0; i < houses.length; i += step) {
+//         run += houses[i]
+//       }
+//
+//       maxMoney = Math.max(run, maxMoney)
+//     }
+//   }
+//
+//   return maxMoney
+// }
+
+// The answer is much easier though. I think I understand this?
 const rob = (houses: number[]): number => {
   let previous = 0
   let beforePrevious = 0

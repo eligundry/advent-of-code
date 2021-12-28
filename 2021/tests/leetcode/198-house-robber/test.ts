@@ -1,24 +1,13 @@
 const rob = (houses: number[]): number => {
-  let maxMoney = 0
-  let minStep = Math.min(2, houses.length - 1)
-  let maxStep = Math.max(houses.length, 3)
+  let previous = 0
+  let beforePrevious = 0
 
-  for (let step = minStep; step < maxStep; step++) {
-    for (let start = 0; start < houses.length; start++) {
-      let run = houses[start]
-
-      for (let i = 0; i < houses.length; i += step) {
-        // console.log({ step, start, i, money: houses[i] })
-        if (start !== i) {
-          run += houses[i]
-        }
-      }
-
-      maxMoney = Math.max(run, maxMoney)
-    }
+  for (let i = 0; i < houses.length; i++) {
+    let tmp = previous
+    previous = Math.max(houses[i] + beforePrevious, previous)
+    beforePrevious = tmp
   }
-  }
-  return maxMoney
+
   return previous
 }
 

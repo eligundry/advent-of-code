@@ -1,0 +1,22 @@
+{
+  "name": "@eligundry/advent-of-code-2023",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "author": "Eli Gundry <eligundry@gmail.com>",
+  "license": "MIT",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": true
+  },
+  "devDependencies": {
+    "prettier": "^3.1.0",
+    "vitest": "^0.34.6"
+  }
+}

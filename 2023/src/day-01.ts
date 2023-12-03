@@ -1,6 +1,5 @@
 import { test, expect } from 'vitest'
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import { readInputIntoLines } from './utils'
 
 const strToNum = {
   zero: '0',
@@ -76,9 +75,7 @@ test('should solve the part 1 example', async () => {
 })
 
 test('should solve the part 1 problem', async () => {
-  const input = (
-    await fs.readFile(path.join('src', 'inputs', 'day-01.txt'), 'utf-8')
-  ).split('\n')
+  const input = await readInputIntoLines('day-01')
   const answer = getCalibratrionValue(input)
   expect(answer).toBe(54561)
 })
@@ -109,9 +106,7 @@ test('should handle the part 2 example', async () => {
 })
 
 test('should solve the part 2 problem', async () => {
-  const input = (
-    await fs.readFile(path.join('src', 'inputs', 'day-01.txt'), 'utf-8')
-  ).split('\n')
+  const input = await readInputIntoLines('day-01')
   const answer = getCalibratrionValue(input, true)
   expect(answer).toBe(54076)
 })

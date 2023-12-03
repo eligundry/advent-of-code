@@ -1,16 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { readInputIntoLines } from './utils'
 
-interface MinMax {
-  min: number
-  max: number
-}
-
 interface BagContents {
   id: number
-  red: MinMax
-  green: MinMax
-  blue: MinMax
+  red: number
+  green: number
+  blue: number
 }
 
 const gameIdPattern = /Game (\d+):/
@@ -19,9 +14,9 @@ const gamePattern = /((\d+) (red|green|blue))/gi
 function calculateGame(gameStr: string): BagContents {
   const contents: BagContents = {
     id: 0,
-    red: { min: Infinity, max: 0 },
-    green: { min: Infinity, max: 0 },
-    blue: { min: Infinity, max: 0 },
+    red: 0,
+    green: 0,
+    blue: 0,
   }
 
   const gameIdMatches = gameStr.match(gameIdPattern)
@@ -37,8 +32,7 @@ function calculateGame(gameStr: string): BagContents {
   for (const match of contentMatches) {
     const color = match[3] as keyof Omit<BagContents, 'id'>
     const amount = Number(match[2])
-    contents[color].max = Math.max(amount, contents[color].max)
-    contents[color].min = Math.min(amount, contents[color].min)
+    contents[color] = Math.max(amount, contents[color])
   }
 
   return contents
@@ -48,9 +42,9 @@ describe('calculateGame', () => {
   it('should handle a single a single draw', async () => {
     expect(calculateGame('Game 1: 1 red, 2 green, 3 blue')).toEqual({
       id: 1,
-      red: { min: 1, max: 1 },
-      green: { min: 2, max: 2 },
-      blue: { min: 3, max: 3 },
+      red: 1,
+      green: 2,
+      blue: 3,
     })
   })
 
@@ -59,9 +53,9 @@ describe('calculateGame', () => {
       calculateGame('Game 1: 1 red, 2 green, 3 blue; 4 red, 3 green, 3 blue')
     ).toEqual({
       id: 1,
-      red: { min: 1, max: 4 },
-      green: { min: 2, max: 3 },
-      blue: { min: 3, max: 3 },
+      red: 4,
+      green: 3,
+      blue: 3,
     })
   })
 })
@@ -72,7 +66,7 @@ function sumIdsOfValidGames(input: string[]): number {
   for (const gameStr of input) {
     const game = calculateGame(gameStr)
 
-    if (game.red.max <= 12 && game.green.max <= 13 && game.blue.max <= 14) {
+    if (game.red <= 12 && game.green <= 13 && game.blue <= 14) {
       sum += game.id
     }
   }
@@ -104,7 +98,7 @@ function powerOfGames(input: string[]) {
 
   for (const gameStr of input) {
     const game = calculateGame(gameStr)
-    sum += game.red.max * game.green.max * game.blue.max
+    sum += game.red * game.green * game.blue
   }
 
   return sum
